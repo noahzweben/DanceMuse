@@ -1,27 +1,27 @@
 from music import *
 from random import *
 from MusicFunctions import *
+from MarkovChords import *
 
 class Chord:
 
-	chords = [[C3,E3,G3],[C3,DS3,G3],[C3,DS3,GS3],[C3,E3,A3],[C3,F3,GS3],[B2,DS3,GS3],[D3,F3,A3]]
+	chordProg = MarkovChords(C2,'./myproj/markov.csv')
 
 	def __init__(self,channel=0,chord =[C3,E3,G3], key = MAJOR_SCALE, baseNote = 0,octaveRange =None):
 		self.notes = chord
 		self.channel = channel
-		Play.setInstrument(97)
+		Play.setInstrument(97,self.channel)
 		self.volume = 127
 		self.key = createKey(key,baseNote)
 		self.octaveRange = octaveRange
-
 		self.timers = {}
+		self.currentChord = "C"
 
 	def play(self,duration = 0):
 		for note in self.notes:
 			Play.noteOn(note,self.volume,self.channel)
 			# else:
 			# 	Play.note(note,127,duration) ### CHECK THAT THIS IS RIGHT PARAMETER ORDER
-
 
 	def end(self):
 		for note in self.notes:
@@ -69,28 +69,46 @@ class Chord:
 
 		self.newNotes(newNotes, nowStart = nowStart)
 
+	def randomChord(self,rangeVal=[-12,12],inKey=True,nowStart = True):
+		newNotes = []
+		for i in range(len(self.notes)):
+			maxval,minval = rangeVal
+			shiftVal = mapValue(random(),0,1,minval,maxval)
+			newNotes.append(self.notes[i]+shiftVal)
+		
+		if inKey == True:
+			newNotes = enforceKey(newNotes,self.key)
+		if self.octaveRange is not None:
+			newNotes = enforceOctave(newNotes,self.octaveRange)
 
-### Random and Automated Effects ####	
-	
+		self.newNotes(newNotes, nowStart = nowStart)
 
-	def randomNewChord(self, chords, interval=0, ): 
-		"""Randomly switches chord to one in supplied set every
-		interval seconds"""
+	def progressChord(self,nowStart = True):
+		self.currentChord,newNotes = self.chordProg.nextChord(self.currentChord)
+		self.newNotes(newNotes, nowStart = nowStart)
 
-		randomindex = int(len(chords)*random())
-		newNotes = chords[randomindex]
-		self.newNotes(newNotes)
 
-		if interval !=0:
-			if "randomNewChord" not in self.timers.keys():
-				self.timers["randomNewChord"] = Timer(interval,self.randomNewChord,[chords])
-			self.timers["randomNewChord"].setDelay(interval)
-			self.timers["randomNewChord"].start()
+### Random and Automated Effects ####	s
+	def autoRandomChord(self,interval,rangeVal=[-12,12],inKey = True):
+		self.randomChord(rangeVal,inKey)
+		self.stopFX("autoRandomChord")
+		self.timers["autoRandomChord"]= Timer(interval, self.randomChord,[rangeVal,inKey])
+		self.timers["autoRandomChord"].start()
 
-	def stopRandomNewChord(self):
-		if "randomNewChord" in self.timers.keys():
-			self.timers["randomNewChord"].stop()
-			del self.timers["randomNewChord"]
+
+
+
+	def autoProgressChord(self, interval=0): 
+		"""Switches chord to one in supplied set every
+		interval seconds. If amount is set to 'R' will 
+		just shift randomly within supplied chords"""
+
+		self.progressChord()
+		self.stopFX("autoProgressChord")
+		self.timers["autoProgressChord"] = Timer(interval,self.progressChord)
+		self.timers["autoProgressChord"].start()
+
+
 
 	######################
 
@@ -98,15 +116,12 @@ class Chord:
 	def autoShift(self, amount, interval, notes=[],  inKey=True): 
 
 		self.shift(amount,notes, inKey)
-		self.stopAutoShift()
+		self.stopFX("autoShift")
 		self.timers["autoShift"] = Timer(interval,self.shift,[amount,notes,inKey])
 		self.timers["autoShift"].start()
 
 
-	def stopAutoShift(self):
-		if "autoShift" in self.timers.keys():
-			self.timers["autoShift"].stop()
-			del self.timers["autoShift"]
+
 
 ##############
 	
@@ -115,14 +130,11 @@ class Chord:
 	def wahPeddle(self,speed,minVal,maxVal):
 		"""Creates wah volume effect at variable speed wah's per minute"""
 
-		self.stopWah()
+		self.stopFX("wahPeddle")
 		self.timers["wahPeddle"] = OscillatorTimer(speed,minVal,maxVal,1,self.setChannelVolume)
 		self.timers["wahPeddle"].start()
 
-	def stopWah(self):
-		if "wahPeddle" in self.timers.keys():
-			self.timers["wahPeddle"].stop()
-			del self.timers["wahPeddle"]
+
 	
 ### Helper Function for wahPeddle ###
 	def setChannelVolume(self,volume):
@@ -133,8 +145,12 @@ class Chord:
 ########
 
 
+	def stopFX(self, effect):
+		if effect in self.timers.keys():
+			self.timers[effect].stop()
+			del self.timers[effect]
 
-	def stopFX(self):
+	def stopAllFX(self):
 		for timer in self.timers.keys():
 			self.timers[timer].stop()
 			del self.timers[timer]

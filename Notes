@@ -1,0 +1,26 @@
+Notes
+
+random Chord sequence:
+	generates a cool sequence of random chords in a given key 
+	— hard code the chords in at first
+	— then work on a way to randomly produce chords for a given key
+			check JMOD quantize methods
+			check availabe scales within the library
+
+WHEN ENFORCING KEY, if going up +1 to get to key, if going down -1 to get to key to go in direction of movement
+
+for randomNewNotes —> option for playing strictly those notes or a multiple of those notes?
+
+for my siren notes, want an option for playing current notes from the chord
+
+maybe want a mimic option —> 
+
+Need to do math for WahPeddle
+
+
+Linked Effects:
+	
+	4 acceleration spikes --> soft drumbeat
+	acceleration spike -->  chord change
+	lean --> while leaning, higher siren note
+	while less movement --> bass notes

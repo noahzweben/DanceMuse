@@ -1,5 +1,5 @@
 from music import *
-#LOLOLOL
+from math import *
 
 
 ### Functions for Enforcing a Key
@@ -13,8 +13,7 @@ def enforceKey(notes,key, baseNote = 0):
 
 	for i in  range(len(notes)):
 		while( (not isKey(notes[i],key)) or (notes[i] in notes[0:i]) ):
-			notes[i] = notes[i]-1
-
+			notes[i] = notes[i]+1
 	notes.sort()
 	return notes
 
