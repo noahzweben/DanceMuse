@@ -7,7 +7,7 @@ class MarkovChords:
 
 	### A list of Chords using C3 as baseNote
 	chords = {"C":[C3,E3,G3],"Dm":[D3,F3,A3],"Em": [E3,G3,B3],"F":[F3,A3,C4],"G":[G3,B3,D3],\
-	 "Am":[C3,E3,A3], "G/B":[B2,D3,G3], 'Bm': [B2, D3, FS3], "Em7": [E3,G3,B3,D4],\
+	 "Am":[C3,E3,A3], "G/B":[B2,D3,G3], 'Cmaj7': [C3, E3, G3,B3], "Em7": [E3,G3,B3,D4],\
 	 "Dm7": [D3,F3,A3,C4], "Am7": [A2,C3,E3,G3], "Fmaj7": [F2,A2, C3, E3]}
 
 	def __init__(self,baseNote,filename):

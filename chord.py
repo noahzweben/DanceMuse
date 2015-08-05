@@ -5,7 +5,7 @@ from MarkovChords import *
 
 class Chord:
 
-	chordProg = MarkovChords(C2,'./myproj/markov.csv')
+	chordProg = MarkovChords(C2,'./myproj/DanceMuse/markov.csv')
 
 	def __init__(self,channel=0,chord =[C3,E3,G3], key = MAJOR_SCALE, baseNote = 0,octaveRange =None):
 		self.notes = chord
@@ -104,9 +104,10 @@ class Chord:
 		just shift randomly within supplied chords"""
 
 		self.progressChord()
-		self.stopFX("autoProgressChord")
-		self.timers["autoProgressChord"] = Timer(interval,self.progressChord)
-		self.timers["autoProgressChord"].start()
+		if interval !=0:
+			self.stopFX("autoProgressChord")
+			self.timers["autoProgressChord"] = Timer(interval,self.progressChord)
+			self.timers["autoProgressChord"].start()
 
 
 
@@ -140,6 +141,9 @@ class Chord:
 	def setChannelVolume(self,volume):
 		Play.setVolume(volume,self.channel)
 		self.volume = volume
+
+	def Instrument(self,instrument):
+		Play.setInstrument(instrument,self.channel)
 
 
 ########

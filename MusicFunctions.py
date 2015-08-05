@@ -51,6 +51,3 @@ def enforceOctave(notes,rangeVal):
 
 
 
-def createChord(length,key,rangeVal):
-	pass
-	#use mapSCALE!
