@@ -2,32 +2,19 @@ from music import *
 from random import *
 from MusicFunctions import *
 from MarkovChords import *
+from MusicObject import *
 
-class Chord:
+class Chord(MusicObject):
 
-	chordProg = MarkovChords(C2,'./myproj/DanceMuse/markov.csv')
+	chordProg = MarkovChords(C3,'./myproj/DanceMuse/markov.csv')
 
-	def __init__(self,channel=0,chord =[C3,E3,G3], key = MAJOR_SCALE, baseNote = 0,octaveRange =None):
+	def __init__(self,channel=0,chord =[C3,E3,G3], key = MAJOR_SCALE, baseNote = 0,\
+		octaveRange =None, instrument = 97, volume = 127):
+		MusicObject.__init__(self,key,baseNote,octaveRange,channel,instrument,volume)
+		
 		self.notes = chord
-		self.channel = channel
-		Play.setInstrument(97,self.channel)
-		self.volume = 127
-		self.key = createKey(key,baseNote)
-		self.octaveRange = octaveRange
 		self.timers = {}
 		self.currentChord = "C"
-
-	def play(self,duration = 0):
-		for note in self.notes:
-			Play.noteOn(note,self.volume,self.channel)
-			# else:
-			# 	Play.note(note,127,duration) ### CHECK THAT THIS IS RIGHT PARAMETER ORDER
-
-	def end(self):
-		for note in self.notes:
-			Play.noteOff(note,self.channel)
-
-
 
 ######## Chord Changes ###############
 	def newNotes(self, newNotes, nowStart = True):
@@ -36,7 +23,7 @@ class Chord:
 		immediately
 		"""
 
-		self.end()
+		self.stop()
 		if type(newNotes) == int:
 			newNotes = [newNotes]
 		self.notes = newNotes
@@ -88,14 +75,13 @@ class Chord:
 		self.newNotes(newNotes, nowStart = nowStart)
 
 
+
 ### Random and Automated Effects ####	s
 	def autoRandomChord(self,interval,rangeVal=[-12,12],inKey = True):
 		self.randomChord(rangeVal,inKey)
 		self.stopFX("autoRandomChord")
 		self.timers["autoRandomChord"]= Timer(interval, self.randomChord,[rangeVal,inKey])
 		self.timers["autoRandomChord"].start()
-
-
 
 
 	def autoProgressChord(self, interval=0): 
@@ -109,10 +95,6 @@ class Chord:
 			self.timers["autoProgressChord"] = Timer(interval,self.progressChord)
 			self.timers["autoProgressChord"].start()
 
-
-
-	######################
-
 	# Automates shifting the chord up and down. 
 	def autoShift(self, amount, interval, notes=[],  inKey=True): 
 
@@ -122,12 +104,6 @@ class Chord:
 		self.timers["autoShift"].start()
 
 
-
-
-##############
-	
-
-
 	def wahPeddle(self,speed,minVal,maxVal):
 		"""Creates wah volume effect at variable speed wah's per minute"""
 
@@ -135,18 +111,6 @@ class Chord:
 		self.timers["wahPeddle"] = OscillatorTimer(speed,minVal,maxVal,1,self.setChannelVolume)
 		self.timers["wahPeddle"].start()
 
-
-	
-### Helper Function for wahPeddle ###
-	def setChannelVolume(self,volume):
-		Play.setVolume(volume,self.channel)
-		self.volume = volume
-
-	def Instrument(self,instrument):
-		Play.setInstrument(instrument,self.channel)
-
-
-########
 
 
 	def stopFX(self, effect):
