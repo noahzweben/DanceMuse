@@ -16,7 +16,7 @@ class Melody:
 
 	def playMelody(self,chord,tempo):
 		chordNotes = enforceOctave(chord.notes,self.rangeVal)
-		noteChoices = self.availableNotes+70*chordNotes
+		noteChoices = 10*self.availableNotes+2*chordNotes
 		noteChoices = [i for i in noteChoices if (i!=F3 and i!=F4)] #sounds bad for some reaason -- need 
 		#to work with the chordNotes bcs FACE is getting turned int ACEF to fit octave --> dissonance
 		randomIndex = int(random()*len(noteChoices))
