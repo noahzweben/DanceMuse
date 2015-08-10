@@ -2,6 +2,7 @@ from music import *
 from chord import *
 from osc import *
 from math import *
+from melody import *
 import time
 
 c = Chord()
@@ -12,9 +13,11 @@ beenSet = False
 beatTimes=[]
 interval = 0
 averageBeat = 0
+m2 = Melody(channel=11,octaveRange=[C4,B5],baseNote=C4,volume=100, instrument = 0)
+
 
 def playChord(message):
-	global prevTime, beenSet, beatTimes, interval, averageBeat
+	global prevTime, beenSet, beatTimes, interval, averageBeat, m2
 	currentTime = time.time()
 	args = message.getArguments()
 	shake = args[2]
@@ -26,6 +29,14 @@ def playChord(message):
 			if len(beatTimes)<=4:
 				print "Beat in", 3-(len(beatTimes)-1)
 
+
+
+	if beenSet == True and abs(shake-normalZ)>shakeTrigger:
+		interval = currentTime-prevTime
+		if interval>.75:
+			print "harmony"
+			m2.harmonize(4)
+
 	if len(beatTimes)==4 and beenSet == False:
 		beenSet = True
 		total=0
@@ -36,11 +47,15 @@ def playChord(message):
 		
 		if averageBeat>2:
 			Play.setInstrument(97,c.channel)
+			m2.setInstrument(41)
 		else: 
 			Play.setInstrument(27,c.channel)
 
 
 		c.autoProgressChord(averageBeat*1000)
+		m2.playMelody(c,averageBeat/2.0*1000)
+
+
 
 
 oscIn = OscIn( 57110 )  

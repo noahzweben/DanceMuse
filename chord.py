@@ -17,18 +17,7 @@ class Chord(MusicObject):
 		self.currentChord = "C"
 
 ######## Chord Changes ###############
-	def newNotes(self, newNotes, nowStart = True):
-		"""
-		Changes the chord playing. If nowStart is set to True, will start playing
-		immediately
-		"""
 
-		self.stop()
-		if type(newNotes) == int:
-			newNotes = [newNotes]
-		self.notes = newNotes
-		if nowStart == True: 
-			self.play()
 
 	def shift(self,amount, notes= [], inKey = True, nowStart = True,):
 		""" Shifts the chord by the specified amount. If amount is given as list i.e. [-4,4] will shift 
