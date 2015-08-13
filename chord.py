@@ -6,15 +6,19 @@ from MusicObject import *
 
 class Chord(MusicObject):
 
-	chordProg = MarkovChords(C3,'./myproj/DanceMuse/markov.csv')
+
+	
 
 	def __init__(self,channel=0,chord =[C3,E3,G3], key = MAJOR_SCALE, baseNote = 0,\
-		octaveRange =None, instrument = 97, volume = 127):
+		octaveRange =[C2,C4], instrument = 97, volume = 127):
 		MusicObject.__init__(self,key,baseNote,octaveRange,channel,instrument,volume)
 		
 		self.notes = chord
 		self.timers = {}
 		self.currentChord = "C"
+		baseValue = octaveRange[0]
+		print baseValue
+		self.chordProg = MarkovChords(baseValue,'./myproj/DanceMuse/markov.csv')
 
 ######## Chord Changes ###############
 

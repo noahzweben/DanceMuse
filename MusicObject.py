@@ -7,6 +7,7 @@ class MusicObject:
 	def __init__(self,key=MAJOR_SCALE,baseNote=C3,octaveRange=[C2,C4],\
 		channel=0, instrument=97,volume=127):
 		self.key = createKey(key,baseNote%12)
+		self.baseNote = baseNote
 		self.channel = channel
 		Play.setInstrument(instrument,self.channel)
 		self.volume = volume

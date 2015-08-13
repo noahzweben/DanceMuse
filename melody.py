@@ -34,7 +34,7 @@ class Melody(MusicObject):
 		else: 
 			self.notes = self.notes[0:1]
 
-		self.notes = [i for i in self.notes if (i%12 != 5)]
+		self.notes = [i for i in self.notes if (i%12 != 5+self.baseNote%12)]
 
 		self.play()
 
