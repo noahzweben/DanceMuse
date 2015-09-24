@@ -1,5 +1,5 @@
 # DanceMuse
-
+# Dynamically writing computer-generated music based on dancer's movements
 This is a package meant to be used with JythonMusic (described in full and downloadable at http://www.jythonmusic.org). 
 
 This package contains the following musical classes -- Chord, Melody, and Drum -- as well as a PhoneConnect class that allows you to dynamically control the music through an OSC app on a Smartphone with acceleromter and gyroscope data.
