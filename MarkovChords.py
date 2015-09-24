@@ -39,12 +39,17 @@ class MarkovChords:
 		chordsList = markovReader.next()[1:] #captures order of chords in header
 
 
+		#Creates a dictionary that has each chord as a key, and the value of each key
+		#is a list of chords, whose frequency depends on how probable they are to follow 
+		# the key chord i.e {"Cmaj7":["Dm","Dm","C"]} if Dm 
+		# had a .66 chance and C a .33 chance of occuring after a Cmaj7.
+
 		chordProbability = {}
 		for line in markovReader:
 			myProbability= []
 			probabilities = line[1:]
 			for i in range(len(probabilities)):
-				for counter in range(int(probabilities[i])):
+				for j in range(int(probabilities[i])):
 					myProbability.append(chordsList[i])
 			chordProbability[line[0]]=myProbability
 		print "Complete"
@@ -52,6 +57,8 @@ class MarkovChords:
 		return chordProbability
 
 	def nextChord(self,currentChord):
+		"""Progresses to a new chord dictated by the probability
+		of new chord following the current chord"""
 		randomIndex = mapValue(random(),0,1,0,99)
 		nextOptions = self.chordProbabilities[currentChord]
 		newChordName = nextOptions[randomIndex]
@@ -61,15 +68,6 @@ class MarkovChords:
 
 
 
-
-
-
-	### Creates the relative intervals
-	# def getIntervals(chords):
-	# 	for chord in chords.keys():
-	# 		for i in range(len(chords[chord])):
-	# 			chords[chord][i]=chords[chord][i]-C3
-	# 	return chords
 
 
 

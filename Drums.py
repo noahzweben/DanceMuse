@@ -18,7 +18,7 @@ class Drums:
 
 
 
-
+	#Plays beats that have different drum sound for beats 1 and 4
 	def classicBeat(self):
 		if self.beatNumber == 0:
 			Play.noteOn(45,127,self.CHANNEL)

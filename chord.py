@@ -4,10 +4,9 @@ from MusicFunctions import *
 from MarkovChords import *
 from MusicObject import *
 
+
+#Contains variables and methods that work with chords
 class Chord(MusicObject):
-
-
-	
 
 	def __init__(self,channel=0,chord =[C3,E3,G3], key = MAJOR_SCALE, baseNote = 0,\
 		octaveRange =[C2,C4], instrument = 97, volume = 127):
@@ -17,19 +16,22 @@ class Chord(MusicObject):
 		self.timers = {}
 		self.currentChord = "C"
 		baseValue = octaveRange[0]
-		print baseValue
+
+		#Creates chord progressions probabilities from a Markov Chain Table excel file
 		self.chordProg = MarkovChords(baseValue,'./myproj/DanceMuse/markov.csv')
 
 ######## Chord Changes ###############
 
 
 	def shift(self,amount, notes= [], inKey = True, nowStart = True,):
-		""" Shifts the chord by the specified amount. If amount is given as list i.e. [-4,4] will shift 
-		randomly within that interval. If notes is set, will only shift the notes 
+		""" Shifts the chord by the specified amount. If amount is given as
+		list i.e. [-4,4] will shift randomly within that interval. 
+		If notes is set, will only shift the notes 
 		of the chord corresponding to the note indexes supplied"""
 	
 		if type(amount)==list:
 			maxval,minval = amount
+			### Generates a random value between minval and maxval
 			shiftVal = mapValue(random(),0,1,minval,maxval)
 		else:
 			shiftVal = amount
@@ -50,6 +52,8 @@ class Chord(MusicObject):
 		self.newNotes(newNotes, nowStart = nowStart)
 
 	def randomChord(self,rangeVal=[-12,12],inKey=True,nowStart = True):
+		"""Shifts to a random new chord with all pitches within rangeVal of their
+		original value"""
 		newNotes = []
 		for i in range(len(self.notes)):
 			maxval,minval = rangeVal
@@ -64,12 +68,13 @@ class Chord(MusicObject):
 		self.newNotes(newNotes, nowStart = nowStart)
 
 	def progressChord(self,nowStart = True):
+		#Uses the Markov Probabilities to change to a new chord
 		self.currentChord,newNotes = self.chordProg.nextChord(self.currentChord)
 		self.newNotes(newNotes, nowStart = nowStart)
 
 
 
-### Random and Automated Effects ####	s
+### Random and Automated Effects ####	
 	def autoRandomChord(self,interval,rangeVal=[-12,12],inKey = True):
 		self.randomChord(rangeVal,inKey)
 		self.stopFX("autoRandomChord")
@@ -99,7 +104,7 @@ class Chord(MusicObject):
 
 	def wahPeddle(self,speed,minVal,maxVal):
 		"""Creates wah volume effect at variable speed wah's per minute"""
-
+		#NEED TO FIX THE TIMING ON THIS
 		self.stopFX("wahPeddle")
 		self.timers["wahPeddle"] = OscillatorTimer(speed,minVal,maxVal,1,self.setChannelVolume)
 		self.timers["wahPeddle"].start()
@@ -109,7 +114,9 @@ class Chord(MusicObject):
 	def stopFX(self, effect):
 		if effect in self.timers.keys():
 			self.timers[effect].stop()
-			del self.timers[effect]
+			del self.timers[effect] 
+			#I've noticed that the more timers there are, the less effective they are, 
+			#so delete them when not in use.
 
 	def stopAllFX(self):
 		for timer in self.timers.keys():

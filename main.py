@@ -10,7 +10,7 @@ import time
 bassChords = Chord()
 drums = Drums()
 melody_high = Melody(channel=11,octaveRange=[C4,B5],baseNote=C4,volume=100, instrument = 41)
-melody_low = Melody(channel=10,octaveRange=[C1,B2],baseNote=C2,volume=127, instrument = 97)
+melody_low = Melody(channel=10,octaveRange=[C1,B2],baseNote=C2,volume=127, instrument = 18)
 phoneIn = PhoneConnect()
 
 
@@ -27,7 +27,11 @@ for i in range(3,0,-1):
 #Start Dancing
 tempo = phoneIn.getBeat() #captures tempo
 print tempo/1000.0
-#
+
+#Changes instrument types based on how fast you are dancing
+if tempo<1000:
+	tempo *= 2
+
 if tempo<2000:
 	bassChords = Chord(octaveRange=[C3,B4],instrument = 30,volume=80)
 	melody_high.setInstrument(30)
@@ -35,7 +39,7 @@ if tempo<2000:
 
 bassChords.autoProgressChord(tempo)
 melody_high.playMelody(bassChords,tempo)
-melody_low.playMelody(bassChords,tempo*2)
+#melody_low.playMelody(bassChords,tempo*2)
 
 
 

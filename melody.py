@@ -14,34 +14,44 @@ class Melody(MusicObject):
 		self.notes = [0]
 		self.autoPlay=None
 		self.isHarmony = False
+		#Makes eigth and quarter notes the most likely followed by
+		# half, dotted half, and whole notes
 		self.durations = 5*[.125]+8*[.25]+2*[.5]+[.75]+[1]
 
 	def playMelody(self, chord,tempo):
 		chordNotes = enforceOctave(chord.notes,self.octaveRange)
-		noteChoices = self.availableNotes+100*chordNotes
-		noteChoices = [i for i in noteChoices if (i%12 !=5)] #sounds bad for some reaason -- need 
-		#to work with the chordNotes bcs FACE is getting turned int ACEF to fit octave --> dissonance
+
+		#Makes it highly likely that a note from the current chord will be in the melody
+		noteChoices = self.availableNotes+70*chordNotes
+		noteChoices = [i for i in noteChoices if (i%12 !=5)] #sounds bad for some reason -- need 
+		#to work with the chordNotes bcs FACE is getting turned int0
+		# ACEF to fit octave causing poor sound quality
+
 		randomIndex = int(random()*len(noteChoices))
 		nextNote = noteChoices[randomIndex]
 		
 		self.stop()
 		self.notes[0] = nextNote
 
+		#Plays a key-enforced harmony, adds interval amount determined in harmonize
 		if self.isHarmony:
 			self.notes = [self.notes[0]]+[self.notes[0]+self.harmonyAmount]
 			self.notes = enforceKey(self.notes,self.key)
 
-		else: 
+		# If harmony is off, just play the root of the melody
+		else: 		
 			self.notes = self.notes[0:1]
 
 		self.notes = [i for i in self.notes if (i%12 != 5+self.baseNote%12)]
 
 		self.play()
 
+		#Picks a random duration from list of possible durations
 		randomTime = int(random()*len(self.durations))
 		duration = int(tempo*self.durations[randomTime])
-		#print chordNotes,nextNote
 
+
+		#Starts the melody
 		if self.autoPlay is not None:
 			self.autoPlay.stop()
 		self.autoPlay = Timer(duration,self.playMelody,[chord,tempo])
@@ -60,14 +70,3 @@ class Melody(MusicObject):
 
 
 
-		##set up timer where you basically just set the delay randomly and pause and unpause it
-
-# m = Melody(volume = 100,instrument = 41)
-# m1 = Melody(channel=12,octaveRange=[C1,C2],baseNote=C1,volume=100, instrument = 41)
-# m2 = Melody(channel=11,octaveRange=[C4,B5],baseNote=C4,volume=100, instrument = 41)
-# c = Chord(volume = 127, instrument = 27)
-# c.autoProgressChord(3000)
-# #m.playMelody(c,3000)
-# m2.playMelody(c,3000)
-# #m1.playMelody(c,3000)
-	

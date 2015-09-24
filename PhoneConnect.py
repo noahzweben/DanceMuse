@@ -13,7 +13,7 @@ class PhoneConnect:
 
 	def __init__(self):
 
-		oscIn = OscIn( 57110 )        # receive messages from OSC clients on port 57110
+		oscIn = OscIn( 57110 )    # receive messages from OSC clients on port 57110
 		self.xAccel = None
 		self.yAccel = None
 		self.zAccel = None
@@ -38,10 +38,14 @@ class PhoneConnect:
 
 
 	def getBeat(self):
+		"""Reads the phone's incoming accelerometer and gyroscope data.
+		Detects beat by waiting for phone accelerometer to shake while still being
+		in a relatively upright position (bc tilting gives false accel reads). Averages
+		interval between first 4 beats to get beat"""
 		prevTime=0
 		beatTimes = []
 		while len(beatTimes)<4:
-			if ( (self.yAccel - self.NORMAL_Y > self.SHAKETRIGGER) and (self.pitch > 70) ):
+			if ( (self.yAccel - self.NORMAL_Y > self.SHAKETRIGGER) and (self.pitch > 95) ):
 				currentTime = time.time()
 				interval = currentTime-prevTime
 				if interval > .65:
