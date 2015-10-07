@@ -6,7 +6,6 @@ class Drums:
 	def __init__(self):
 		self.beatNumber = 0
 		self.beat = None
-		self.isRain = False
 
 	
 	def startBeat(self,beat,tempo):
@@ -42,15 +41,4 @@ class Drums:
 		self.beatNumber= self.beatNumber%4
 
 
-	def raindrops(self,tempo,inst):
-		self.isRain = True
-		tempo = tempo/1000.0
-
-		for i in range(16):
-			Play.noteOn(122,90,15)
-			time.sleep(.05)
-
-		self.isRain = False
-
-
-
+	
